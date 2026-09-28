@@ -10,33 +10,185 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticated/classes'
+import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated/notes'
+import { Route as ApiTutorRouteImport } from './routes/api/tutor'
+import { Route as AuthenticatedCertificateSkillIdRouteImport } from './routes/_authenticated/certificate.$skillId'
+import { Route as AuthenticatedPracticeIndexRouteImport } from './routes/_authenticated/practice.index'
+import { Route as AuthenticatedPracticeSessionRouteImport } from './routes/_authenticated/practice.session'
+import { Route as AuthenticatedSkillsIndexRouteImport } from './routes/_authenticated/skills.index'
+import { Route as AuthenticatedSkillsSkillIdRouteImport } from './routes/_authenticated/skills.$skillId'
+import { Route as AuthenticatedTutorIndexRouteImport } from './routes/_authenticated/tutor.index'
+import { Route as AuthenticatedTutorThreadIdRouteImport } from './routes/_authenticated/tutor.$threadId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedClassesRoute = AuthenticatedClassesRouteImport.update({
+  id: '/classes',
+  path: '/classes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedNotesRoute = AuthenticatedNotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiTutorRoute = ApiTutorRouteImport.update({
+  id: '/api/tutor',
+  path: '/api/tutor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCertificateSkillIdRoute =
+  AuthenticatedCertificateSkillIdRouteImport.update({
+    id: '/certificate/$skillId',
+    path: '/certificate/$skillId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPracticeIndexRoute =
+  AuthenticatedPracticeIndexRouteImport.update({
+    id: '/practice/',
+    path: '/practice/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPracticeSessionRoute =
+  AuthenticatedPracticeSessionRouteImport.update({
+    id: '/practice/session',
+    path: '/practice/session',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSkillsIndexRoute =
+  AuthenticatedSkillsIndexRouteImport.update({
+    id: '/skills/',
+    path: '/skills/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSkillsSkillIdRoute =
+  AuthenticatedSkillsSkillIdRouteImport.update({
+    id: '/skills/$skillId',
+    path: '/skills/$skillId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedTutorIndexRoute = AuthenticatedTutorIndexRouteImport.update({
+  id: '/tutor/',
+  path: '/tutor/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTutorThreadIdRoute =
+  AuthenticatedTutorThreadIdRouteImport.update({
+    id: '/tutor/$threadId',
+    path: '/tutor/$threadId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/classes': typeof AuthenticatedClassesRoute
+  '/notes': typeof AuthenticatedNotesRoute
+  '/api/tutor': typeof ApiTutorRoute
+  '/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
+  '/practice/session': typeof AuthenticatedPracticeSessionRoute
+  '/skills/$skillId': typeof AuthenticatedSkillsSkillIdRoute
+  '/tutor/$threadId': typeof AuthenticatedTutorThreadIdRoute
+  '/practice/': typeof AuthenticatedPracticeIndexRoute
+  '/skills/': typeof AuthenticatedSkillsIndexRoute
+  '/tutor/': typeof AuthenticatedTutorIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/classes': typeof AuthenticatedClassesRoute
+  '/notes': typeof AuthenticatedNotesRoute
+  '/api/tutor': typeof ApiTutorRoute
+  '/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
+  '/practice/session': typeof AuthenticatedPracticeSessionRoute
+  '/skills/$skillId': typeof AuthenticatedSkillsSkillIdRoute
+  '/tutor/$threadId': typeof AuthenticatedTutorThreadIdRoute
+  '/practice': typeof AuthenticatedPracticeIndexRoute
+  '/skills': typeof AuthenticatedSkillsIndexRoute
+  '/tutor': typeof AuthenticatedTutorIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/classes': typeof AuthenticatedClassesRoute
+  '/_authenticated/notes': typeof AuthenticatedNotesRoute
+  '/api/tutor': typeof ApiTutorRoute
+  '/_authenticated/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
+  '/_authenticated/practice/session': typeof AuthenticatedPracticeSessionRoute
+  '/_authenticated/skills/$skillId': typeof AuthenticatedSkillsSkillIdRoute
+  '/_authenticated/tutor/$threadId': typeof AuthenticatedTutorThreadIdRoute
+  '/_authenticated/practice/': typeof AuthenticatedPracticeIndexRoute
+  '/_authenticated/skills/': typeof AuthenticatedSkillsIndexRoute
+  '/_authenticated/tutor/': typeof AuthenticatedTutorIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/classes'
+    | '/notes'
+    | '/api/tutor'
+    | '/certificate/$skillId'
+    | '/practice/session'
+    | '/skills/$skillId'
+    | '/tutor/$threadId'
+    | '/practice/'
+    | '/skills/'
+    | '/tutor/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/classes'
+    | '/notes'
+    | '/api/tutor'
+    | '/certificate/$skillId'
+    | '/practice/session'
+    | '/skills/$skillId'
+    | '/tutor/$threadId'
+    | '/practice'
+    | '/skills'
+    | '/tutor'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/classes'
+    | '/_authenticated/notes'
+    | '/api/tutor'
+    | '/_authenticated/certificate/$skillId'
+    | '/_authenticated/practice/session'
+    | '/_authenticated/skills/$skillId'
+    | '/_authenticated/tutor/$threadId'
+    | '/_authenticated/practice/'
+    | '/_authenticated/skills/'
+    | '/_authenticated/tutor/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ApiTutorRoute: typeof ApiTutorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +200,125 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/classes': {
+      id: '/_authenticated/classes'
+      path: '/classes'
+      fullPath: '/classes'
+      preLoaderRoute: typeof AuthenticatedClassesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notes': {
+      id: '/_authenticated/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof AuthenticatedNotesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/tutor': {
+      id: '/api/tutor'
+      path: '/api/tutor'
+      fullPath: '/api/tutor'
+      preLoaderRoute: typeof ApiTutorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/certificate/$skillId': {
+      id: '/_authenticated/certificate/$skillId'
+      path: '/certificate/$skillId'
+      fullPath: '/certificate/$skillId'
+      preLoaderRoute: typeof AuthenticatedCertificateSkillIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/practice/': {
+      id: '/_authenticated/practice/'
+      path: '/practice'
+      fullPath: '/practice/'
+      preLoaderRoute: typeof AuthenticatedPracticeIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/practice/session': {
+      id: '/_authenticated/practice/session'
+      path: '/practice/session'
+      fullPath: '/practice/session'
+      preLoaderRoute: typeof AuthenticatedPracticeSessionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/skills/': {
+      id: '/_authenticated/skills/'
+      path: '/skills'
+      fullPath: '/skills/'
+      preLoaderRoute: typeof AuthenticatedSkillsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/skills/$skillId': {
+      id: '/_authenticated/skills/$skillId'
+      path: '/skills/$skillId'
+      fullPath: '/skills/$skillId'
+      preLoaderRoute: typeof AuthenticatedSkillsSkillIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/tutor/': {
+      id: '/_authenticated/tutor/'
+      path: '/tutor'
+      fullPath: '/tutor/'
+      preLoaderRoute: typeof AuthenticatedTutorIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/tutor/$threadId': {
+      id: '/_authenticated/tutor/$threadId'
+      path: '/tutor/$threadId'
+      fullPath: '/tutor/$threadId'
+      preLoaderRoute: typeof AuthenticatedTutorThreadIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedClassesRoute: typeof AuthenticatedClassesRoute
+  AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
+  AuthenticatedCertificateSkillIdRoute: typeof AuthenticatedCertificateSkillIdRoute
+  AuthenticatedPracticeSessionRoute: typeof AuthenticatedPracticeSessionRoute
+  AuthenticatedSkillsSkillIdRoute: typeof AuthenticatedSkillsSkillIdRoute
+  AuthenticatedTutorThreadIdRoute: typeof AuthenticatedTutorThreadIdRoute
+  AuthenticatedPracticeIndexRoute: typeof AuthenticatedPracticeIndexRoute
+  AuthenticatedSkillsIndexRoute: typeof AuthenticatedSkillsIndexRoute
+  AuthenticatedTutorIndexRoute: typeof AuthenticatedTutorIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedClassesRoute: AuthenticatedClassesRoute,
+  AuthenticatedNotesRoute: AuthenticatedNotesRoute,
+  AuthenticatedCertificateSkillIdRoute: AuthenticatedCertificateSkillIdRoute,
+  AuthenticatedPracticeSessionRoute: AuthenticatedPracticeSessionRoute,
+  AuthenticatedSkillsSkillIdRoute: AuthenticatedSkillsSkillIdRoute,
+  AuthenticatedTutorThreadIdRoute: AuthenticatedTutorThreadIdRoute,
+  AuthenticatedPracticeIndexRoute: AuthenticatedPracticeIndexRoute,
+  AuthenticatedSkillsIndexRoute: AuthenticatedSkillsIndexRoute,
+  AuthenticatedTutorIndexRoute: AuthenticatedTutorIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ApiTutorRoute: ApiTutorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
