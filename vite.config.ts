@@ -9,7 +9,7 @@ import netlify from "@netlify/vite-plugin-tanstack-start";
 
 // Netlify sets NETLIFY=true during its builds. There we use the Netlify plugin
 // instead of the default Cloudflare output, so Lovable preview/publish keep working.
-const onNetlify = process.env.NETLIFY === "true";
+const onNetlify = process.env["NETLIFY"] === "true";
 
 export default defineConfig({
   tanstackStart: {
