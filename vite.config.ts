@@ -5,6 +5,7 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { liveVoiceDev } from "./live-vite-plugin";
 import netlify from "@netlify/vite-plugin-tanstack-start";
 
 // Netlify sets NETLIFY=true during its builds. There we use the Netlify plugin
@@ -12,6 +13,7 @@ import netlify from "@netlify/vite-plugin-tanstack-start";
 const onNetlify = process.env["NETLIFY"] === "true";
 
 export default defineConfig({
+  vite: { plugins: [liveVoiceDev()] },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this

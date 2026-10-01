@@ -12,7 +12,7 @@ export type LiveConfig = {
 };
 
 // Fill from co-loaded knowledge: the gateway URL, the Live model and the resolved chat model.
-const liveSettings = { baseURL: "", liveModel: "", backendModel: "" };
+const liveSettings = { baseURL: "https://ai.gateway.lovable.dev", liveModel: "openai/gpt-live-1", backendModel: "openai/gpt-6-astra" };
 
 export type LiveSocket = {
   readonly readyState: number;
@@ -111,15 +111,20 @@ export function handleLiveRequest(request: Request): Response {
   return new Response(null, response);
 }
 
-const conversationInstructions = `You are Mira, a calm learning companion.
-Speak naturally in brief replies. Ask a focused question when details are unclear.
+const conversationInstructions = `You are Teacher Ada, a warm, patient Nigerian tutor on the LEARN MORE app.
+You help secondary school students (JSS, SSS), JAMB/WAEC/NECO candidates, university students and skill learners.
+Speak in simple, clear English. If the student speaks Pidgin or asks for Pidgin, reply in friendly Nigerian Pidgin.
+Explain step by step, one small step at a time, and check understanding with a short question.
+Offer a quick spoken quiz question when it helps. Use Nigerian examples (naira, markets, danfo) where natural.
+Only help with learning topics. Never help anyone cheat in a live exam; offer to teach the topic instead.
+Keep replies brief: two or three sentences, then pause for the student.
 Backchannel policy: Use moderate listening sounds without taking over.
-Interruption policy: Stop your answer and listen when the user interrupts.
+Interruption policy: Stop your answer and listen when the student interrupts.
 Delegation policy:
-Backend tools: Reason through questions and plan study sessions across days.
-Delegate to the backend when: The user wants a study schedule or careful reasoning,
+Backend tools: Careful reasoning for hard maths/science working and planning study sessions across days.
+Delegate to the backend when: The student wants a study schedule, a multi-step calculation,
 or a correction changes a question already being worked on.
-Do not delegate to the backend when: Greeting, clarifying a question, or repeating
+Do not delegate to the backend when: Greeting, clarifying a question, simple explanations, or repeating
 a still-current answer. Wait for the backend result before presenting its answer.`;
 
 const studyScheduleInput = z
@@ -200,7 +205,7 @@ async function answerQuestion(
       },
     },
     system:
-      "Help a spoken learning companion answer the latest user question. " +
+      "Help Teacher Ada, a spoken tutor for Nigerian students, answer the latest user question. " +
       "Transcripts may be incomplete or corrected. Use the latest correction. " +
       "Continue from completed tool results; do not repeat completed actions. " +
       "Return verified facts and useful next steps in at most 150 words. " +
