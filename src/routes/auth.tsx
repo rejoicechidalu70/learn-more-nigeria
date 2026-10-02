@@ -54,10 +54,14 @@ function AuthPage() {
         options: { emailRedirectTo: window.location.origin + "/dashboard", data: { full_name: name, user_type: type } },
       });
       if (error) toast.error(error.message);
+      else if (data.user && data.user.identities?.length === 0) {
+        toast.error("This email already has an account. Sign in, or tap 'Forgot password?' to set a new one.");
+        setMode("in");
+      }
       else if (!data.session) toast.success("Check your email to confirm your account.");
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) toast.error(error.message);
+      if (error) toast.error(error.message === "Invalid login credentials" ? "Wrong email or password. Tap 'Forgot password?' if you can't remember it." : error.message);
     }
     setBusy(false);
   };
@@ -87,6 +91,13 @@ function AuthPage() {
         <div><Label htmlFor="p">Password</Label><Input id="p" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="h-12" /></div>
         <Button type="submit" size="xl" className="w-full" disabled={busy}>{mode === "in" ? "Sign in" : "Create account"}</Button>
       </form>
+      {mode === "in" && (
+        <button type="button" className="mt-3 w-full text-center text-sm text-muted-foreground underline" onClick={async () => {
+          if (!email) { toast.error("Type your email first."); return; }
+          const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/reset-password" });
+          if (error) toast.error(error.message); else toast.success("Check your email for a link to set a new password.");
+        }}>Forgot password?</button>
+      )}
       <button className="mt-4 w-full text-center text-sm font-semibold text-primary" onClick={() => setMode(mode === "in" ? "up" : "in")}>
         {mode === "in" ? "New here? Create a free account" : "Already have an account? Sign in"}
       </button>
