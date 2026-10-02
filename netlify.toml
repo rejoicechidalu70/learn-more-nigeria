@@ -1,3 +1,11 @@
 [build]
   command = "vite build"
   publish = "dist/client"
+
+# Public (publishable) backend values — safe to commit, so Netlify needs no manual setup.
+[build.environment]
+  VITE_SUPABASE_URL = "https://opchewdxnmneiltlbwfv.supabase.co"
+  VITE_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2iQIKg6cDPwb0w_9KeaQkg_gnGE7Bxo"
+  VITE_SUPABASE_PROJECT_ID = "opchewdxnmneiltlbwfv"
+  SUPABASE_URL = "https://opchewdxnmneiltlbwfv.supabase.co"
+  SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2iQIKg6cDPwb0w_9KeaQkg_gnGE7Bxo"
