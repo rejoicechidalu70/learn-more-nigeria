@@ -64,6 +64,17 @@ function AuthPage() {
   };
 
   const google = async () => {
+    const host = window.location.hostname;
+    const onLovable = host.endsWith("lovable.app") || host.endsWith("lovableproject.com") || host === "localhost";
+    if (!onLovable) {
+      // Netlify / other hosts: the Lovable sign-in helper page doesn't exist there, so go direct.
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin + "/auth" },
+      });
+      if (error) toast.error("Google sign-in failed. Please try again.");
+      return;
+    }
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
     if (r.error) toast.error("Google sign-in failed. Please try again.");
   };
