@@ -70,8 +70,6 @@ function AuthPage() {
         <h1 className="mt-3 text-2xl font-extrabold">{mode === "in" ? "Welcome back" : "Join LEARN MORE"}</h1>
         <p className="text-sm text-muted-foreground">Learn anything. Anytime.</p>
       </div>
-      <Button variant="outline" size="xl" className="w-full" onClick={google}>Continue with Google</Button>
-      <div className="my-4 text-center text-xs text-muted-foreground">or use email</div>
       <form onSubmit={submit} className="space-y-3">
         {mode === "up" && (
           <>
