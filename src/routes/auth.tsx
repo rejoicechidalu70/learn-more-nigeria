@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,6 +63,21 @@ function AuthPage() {
     setBusy(false);
   };
 
+  const google = async () => {
+    const host = window.location.hostname;
+    const onLovable = host.endsWith("lovable.app") || host.endsWith("lovableproject.com") || host === "localhost";
+    if (!onLovable) {
+      // Netlify / other hosts: the Lovable sign-in helper page doesn't exist there, so go direct.
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin + "/auth" },
+      });
+      if (error) toast.error("Google sign-in failed. Please try again.");
+      return;
+    }
+    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
+    if (r.error) toast.error("Google sign-in failed. Please try again.");
+  };
 
   return (
     <div className="mx-auto max-w-sm py-6">
@@ -70,6 +86,8 @@ function AuthPage() {
         <h1 className="mt-3 text-2xl font-extrabold">{mode === "in" ? "Welcome back" : "Join LEARN MORE"}</h1>
         <p className="text-sm text-muted-foreground">Learn anything. Anytime.</p>
       </div>
+      <Button variant="outline" size="xl" className="w-full" onClick={google}>Continue with Google</Button>
+      <div className="my-4 text-center text-xs text-muted-foreground">or use email</div>
       <form onSubmit={submit} className="space-y-3">
         {mode === "up" && (
           <>
