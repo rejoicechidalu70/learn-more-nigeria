@@ -63,7 +63,6 @@ function AuthPage() {
         const { error: e2 } = await supabase.auth.signInWithPassword({ email, password });
         if (e2) toast.error(e2.message);
       }
-      if (!error) navigate({ to: "/dashboard" });
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) toast.error(error.message === "Invalid login credentials" ? "Wrong email or password. Tap 'Forgot password?' if you can't remember it." : error.message);
