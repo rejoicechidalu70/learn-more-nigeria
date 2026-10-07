@@ -34,6 +34,7 @@ function AuthPage() {
   const [name, setName] = useState("");
   const [type, setType] = useState("secondary");
   const [busy, setBusy] = useState(false);
+  const [showPw, setShowPw] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -58,7 +59,10 @@ function AuthPage() {
         toast.error("This email already has an account. Sign in, or tap 'Forgot password?' to set a new one.");
         setMode("in");
       }
-      else if (!data.session) toast.success("Check your email to confirm your account.");
+      else if (!data.session) {
+        const { error: e2 } = await supabase.auth.signInWithPassword({ email, password });
+        if (e2) toast.error(e2.message);
+      }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) toast.error(error.message === "Invalid login credentials" ? "Wrong email or password. Tap 'Forgot password?' if you can't remember it." : error.message);
@@ -88,7 +92,12 @@ function AuthPage() {
           </>
         )}
         <div><Label htmlFor="e">Email</Label><Input id="e" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-12" /></div>
-        <div><Label htmlFor="p">Password</Label><Input id="p" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="h-12" /></div>
+        <div><Label htmlFor="p">Password</Label>
+          <div className="relative">
+            <Input id="p" type={showPw ? "text" : "password"} required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="h-12 pr-16" />
+            <button type="button" onClick={() => setShowPw(!showPw)} className="absolute inset-y-0 right-3 text-sm font-semibold text-primary">{showPw ? "Hide" : "Show"}</button>
+          </div>
+        </div>
         <Button type="submit" size="xl" className="w-full" disabled={busy}>{mode === "in" ? "Sign in" : "Create account"}</Button>
       </form>
       {mode === "in" && (
