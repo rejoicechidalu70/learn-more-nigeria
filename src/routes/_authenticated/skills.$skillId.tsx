@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { lessonCount, skillById, type Lesson } from "@/lib/data/skills";
 import { useCertificates, useLessonProgress } from "@/lib/progress";
 import { supabase } from "@/integrations/supabase/client";
+import { VideoPlayer } from "@/components/video-player";
 
 export const Route = createFileRoute("/_authenticated/skills/$skillId")({
   loader: ({ params }) => {
@@ -90,9 +91,8 @@ function LessonBody({ lesson, done, onComplete }: { lesson: Lesson; done: boolea
   const correct = pick === lesson.quiz.answer;
   return (
     <div className="space-y-3 border-t p-4">
-      <a href={lesson.video} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl bg-muted p-3 text-sm font-semibold">
-        <PlayCircle className="size-8 text-primary" /> Watch video lesson <span className="ml-auto text-xs font-normal text-muted-foreground">uses data</span>
-      </a>
+      <p className="flex items-center gap-2 text-sm font-semibold"><PlayCircle className="size-5 text-primary" /> Video lesson <span className="ml-auto text-xs font-normal text-muted-foreground">uses data</span></p>
+      <VideoPlayer link={lesson.video} title={lesson.title} />
       <p>{lesson.text}</p>
       <div className="rounded-xl border p-3">
         <p className="mb-2 text-sm font-bold">Quick quiz: {lesson.quiz.q}</p>

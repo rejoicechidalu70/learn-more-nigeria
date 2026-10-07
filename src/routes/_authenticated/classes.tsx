@@ -43,11 +43,12 @@ function ClassesPage() {
   const upcoming = withTime.filter((x) => x.status !== "past").sort((a, b) => +a.start - +b.start);
   const past = withTime.filter((x) => x.status === "past").sort((a, b) => +b.start - +a.start);
 
+  const [playing, setPlaying] = useState<string | null>(null);
   const mark = async (id: string) => {
     await supabase.from("class_attendance").upsert({ class_id: id, status: "watched" }, { onConflict: "user_id,class_id" });
     qc.invalidateQueries({ queryKey: ["attendance"] });
   };
-  const join = (c: ClassItem) => { mark(c.id); window.open(c.link, "_blank", "noopener"); };
+  const join = (c: ClassItem) => { mark(c.id); setPlaying(playing === c.id ? null : c.id); };
 
   return (
     <div>
