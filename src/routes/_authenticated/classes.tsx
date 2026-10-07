@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Bell, CheckCircle2, ExternalLink, FileText, Radio, Video } from "lucide-react";
+import { Bell, CheckCircle2, FileText, Radio, Video } from "lucide-react";
 import { PageTitle } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { CLASSES, classTime, icsFor, type ClassItem } from "@/lib/data/classes";
 import { supabase } from "@/integrations/supabase/client";
+import { VideoPlayer } from "@/components/video-player";
 
 export const Route = createFileRoute("/_authenticated/classes")({
   head: () => ({
@@ -43,11 +44,12 @@ function ClassesPage() {
   const upcoming = withTime.filter((x) => x.status !== "past").sort((a, b) => +a.start - +b.start);
   const past = withTime.filter((x) => x.status === "past").sort((a, b) => +b.start - +a.start);
 
+  const [playing, setPlaying] = useState<string | null>(null);
   const mark = async (id: string) => {
     await supabase.from("class_attendance").upsert({ class_id: id, status: "watched" }, { onConflict: "user_id,class_id" });
     qc.invalidateQueries({ queryKey: ["attendance"] });
   };
-  const join = (c: ClassItem) => { mark(c.id); window.open(c.link, "_blank", "noopener"); };
+  const join = (c: ClassItem) => { mark(c.id); setPlaying(playing === c.id ? null : c.id); };
 
   return (
     <div>
@@ -74,21 +76,22 @@ function ClassesPage() {
               </div>
               <p className="mt-2 text-sm">{c.summary}</p>
               <div className="mt-3 flex flex-wrap gap-2">
-                {status === "live" ? <Button size="lg" onClick={() => join(c)}>Join class <ExternalLink /></Button> : <Button size="lg" variant="outline" onClick={() => download(c)}><Bell /> Remind me</Button>}
+                {status === "live" ? <Button size="lg" onClick={() => join(c)}>Join class <Video /></Button> : <Button size="lg" variant="outline" onClick={() => download(c)}><Bell /> Remind me</Button>}
               </div>
+              {playing === c.id && <div className="mt-3"><VideoPlayer link={c.link} title={c.title} /></div>}
             </div>
           ))}
         </div>
       ) : (
         <div className="space-y-3">
-          {past.map(({ c, start }) => <Recording key={c.id} c={c} start={start} watched={seen.has(c.id)} onWatch={() => join(c)} onMark={() => mark(c.id)} />)}
+          {past.map(({ c, start }) => <Recording key={c.id} c={c} start={start} watched={seen.has(c.id)} playing={playing === c.id} onWatch={() => join(c)} onMark={() => mark(c.id)} />)}
         </div>
       )}
     </div>
   );
 }
 
-function Recording({ c, start, watched, onWatch, onMark }: { c: ClassItem; start: Date; watched: boolean; onWatch: () => void; onMark: () => void }) {
+function Recording({ c, start, watched, playing, onWatch, onMark }: { c: ClassItem; start: Date; watched: boolean; playing: boolean; onWatch: () => void; onMark: () => void }) {
   const [open, setOpen] = useState(false);
   return (
     <div className={`rounded-2xl border bg-card p-4 ${watched ? "" : "border-l-4 border-l-warning"}`}>
@@ -100,6 +103,7 @@ function Recording({ c, start, watched, onWatch, onMark }: { c: ClassItem; start
         <Button variant="outline" onClick={() => setOpen(!open)}><FileText /> {open ? "Hide" : "Notes & transcript"}</Button>
         {!watched && <Button variant="ghost" onClick={onMark}><CheckCircle2 /> Mark caught up</Button>}
       </div>
+      {playing && <div className="mt-3"><VideoPlayer link={c.link} title={c.title} /></div>}
       {open && (
         <div className="mt-3 rounded-xl bg-muted p-3 text-sm">
           <p className="font-bold">Summary</p><p>{c.summary}</p>
