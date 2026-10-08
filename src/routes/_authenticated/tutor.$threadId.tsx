@@ -28,6 +28,13 @@ function ThreadPage() {
 
 const QUICK = ["Explain this topic simply", "Give me a worked example", "Quiz me with 3 questions", "Summarise for revision"];
 
+// The AI key only exists on the Lovable-hosted site, so other hosts (Netlify) send tutor chats there.
+function tutorApi() {
+  const h = typeof window !== "undefined" ? window.location.hostname : "";
+  const onLovable = h.endsWith("lovable.app") || h.endsWith("lovableproject.com") || h === "localhost";
+  return onLovable ? "/api/tutor" : "https://skill-naija-leap.lovable.app/api/tutor";
+}
+
 function ChatWindow({ thread }: { thread: TutorThread }) {
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -35,7 +42,7 @@ function ChatWindow({ thread }: { thread: TutorThread }) {
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
-        api: "/api/tutor",
+        api: tutorApi(),
         body: { level: thread.level, subject: thread.subject, language: thread.language },
         headers: async (): Promise<Record<string, string>> => {
           const { data } = await supabase.auth.getSession();
