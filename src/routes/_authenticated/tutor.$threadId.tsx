@@ -5,7 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
 import { Conversation, ConversationContent, ConversationEmptyState, ConversationScrollButton } from "@/components/ai-elements/conversation";
-import { Message, MessageContent, MessageResponse } from "@/components/ai-elements/message";
+import { Message, MessageContent } from "@/components/ai-elements/message-lite";
+import { SimpleMarkdown } from "@/components/simple-markdown";
 import { PromptInput, PromptInputFooter, PromptInputSubmit, PromptInputTextarea } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { getThread, updateThread, type TutorThread } from "@/lib/tutor-store";
@@ -100,7 +101,7 @@ function ChatWindow({ thread }: { thread: TutorThread }) {
             messages.map((m) => (
               <Message key={m.id} from={m.role}>
                 <MessageContent className={m.role === "user" ? "bg-primary text-primary-foreground" : ""}>
-                  {m.parts.map((p, i) => (p.type === "text" ? (m.role === "assistant" ? <MessageResponse key={i}>{p.text}</MessageResponse> : <p key={i} className="whitespace-pre-wrap">{p.text}</p>) : null))}
+                  {m.parts.map((p, i) => (p.type === "text" ? (m.role === "assistant" ? <SimpleMarkdown key={i}>{p.text}</SimpleMarkdown> : <p key={i} className="whitespace-pre-wrap">{p.text}</p>) : null))}
                 </MessageContent>
               </Message>
             ))
