@@ -1,11 +1,13 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Award, CheckCircle2, ChevronLeft, Circle, PlayCircle } from "lucide-react";
+import { Award, CheckCircle2, ChevronLeft, Circle, Lock, PlayCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { lessonCount, skillById, type Lesson } from "@/lib/data/skills";
+import { lessonCount, skillById, PREMIUM_PRICE, PAY_ACCOUNT, type Lesson } from "@/lib/data/skills";
 import { useCertificates, useLessonProgress } from "@/lib/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { VideoPlayer } from "@/components/video-player";
@@ -37,6 +39,11 @@ function SkillPage() {
   const all = skill.modules.flatMap((m) => m.lessons);
   const [openId, setOpenId] = useState<string | null>(all.find((l) => !done.has(l.id))?.id ?? all[0].id);
   const hasCert = certs.some((c) => c.skill_id === skill.id);
+  const { data: unlock } = useQuery({
+    queryKey: ["skill_unlock", skill.id],
+    queryFn: async () => (await supabase.from("skill_unlocks").select("status").eq("skill_id", skill.id).maybeSingle()).data,
+  });
+  const unlocked = unlock?.status === "approved";
 
   const complete = async (l: Lesson) => {
     const { error } = await supabase.from("lesson_progress").upsert({ skill_id: skill.id, lesson_id: l.id }, { onConflict: "user_id,lesson_id" });
@@ -72,16 +79,49 @@ function SkillPage() {
           <h2 className="mb-2 font-bold">{m.title}</h2>
           <div className="space-y-2">
             {m.lessons.map((l) => (
+              l.premium && !unlocked ? (
+                <div key={l.id} className="flex items-center gap-3 rounded-xl border bg-muted/50 p-4 font-semibold text-muted-foreground"><Lock className="size-5" /> {l.title}</div>
+              ) : (
               <div key={l.id} className="rounded-xl border bg-card">
                 <button onClick={() => setOpenId(openId === l.id ? null : l.id)} className="flex w-full items-center gap-3 p-4 text-left font-semibold">
                   {done.has(l.id) ? <CheckCircle2 className="text-success" /> : <Circle className="text-muted-foreground" />} {l.title}
                 </button>
                 {openId === l.id && <LessonBody lesson={l} done={done.has(l.id)} onComplete={() => complete(l)} />}
               </div>
+              )
             ))}
           </div>
+          {m.lessons[0]?.premium && !unlocked && <PayCard skillId={skill.id} status={unlock?.status} />}
         </div>
       ))}
+    </div>
+  );
+}
+
+function PayCard({ skillId, status }: { skillId: string; status?: string }) {
+  const qc = useQueryClient();
+  const [name, setName] = useState("");
+  const send = async () => {
+    if (!name.trim()) return toast.error("Type the name on the account you paid from.");
+    const { error } = await supabase.from("skill_unlocks").insert({ skill_id: skillId, payer_name: name.trim() });
+    if (error) return toast.error("Couldn't send. Try again.");
+    toast.success("Thanks! We'll unlock your classes once we confirm your payment.");
+    qc.invalidateQueries({ queryKey: ["skill_unlock", skillId] });
+  };
+  return (
+    <div className="mt-3 rounded-2xl border-2 border-primary bg-primary-soft p-4">
+      <p className="flex items-center gap-2 font-bold"><Lock className="size-5" /> Unlock 7 premium classes — ₦{PREMIUM_PRICE.toLocaleString()}</p>
+      <p className="mt-2 text-sm">Transfer to:</p>
+      <p className="text-xl font-extrabold">{PAY_ACCOUNT.number}</p>
+      <p className="text-sm font-semibold">{PAY_ACCOUNT.bank}</p>
+      {status === "pending" ? (
+        <p className="mt-3 text-sm font-semibold">Payment sent — waiting for confirmation.</p>
+      ) : (
+        <div className="mt-3 space-y-2">
+          <Input placeholder="Name on the account you paid from" value={name} onChange={(e) => setName(e.target.value)} className="h-12 bg-background" />
+          <Button size="lg" className="w-full" onClick={send}>I have paid</Button>
+        </div>
+      )}
     </div>
   );
 }
