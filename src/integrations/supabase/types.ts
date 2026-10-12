@@ -218,6 +218,33 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_unlocks: {
+        Row: {
+          created_at: string
+          id: string
+          payer_name: string
+          skill_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          payer_name: string
+          skill_id: string
+          status?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          payer_name?: string
+          skill_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -248,6 +275,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "teacher" | "student" | "skill_learner"
