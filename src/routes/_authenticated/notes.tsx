@@ -88,6 +88,7 @@ function NotesPage() {
         </>
       )}
 
+      {!isTeacher && <p className="mb-4 rounded-xl bg-primary-soft p-3 text-sm">Are you a teacher? Ask the admin to turn on note uploads for your account.</p>}
       {isTeacher && <Button size="lg" className="mb-4" onClick={() => setUploadOpen(true)}><Upload /> Upload lesson note</Button>}
 
       <div className="space-y-2">

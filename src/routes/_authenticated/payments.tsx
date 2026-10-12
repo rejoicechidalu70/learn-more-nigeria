@@ -4,6 +4,8 @@ import { Wallet } from "lucide-react";
 import { toast } from "sonner";
 import { PageTitle } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { skillById } from "@/lib/data/skills";
 
@@ -33,10 +35,26 @@ function Payments() {
     toast.success("Unlocked!");
     qc.invalidateQueries({ queryKey: ["unlock_requests"] });
   };
+  const [email, setEmail] = useState("");
+  const makeTeacher = async () => {
+    const { data, error } = await supabase.rpc("make_teacher", { _email: email });
+    if (error) return toast.error("Couldn't do that.");
+    if (!data) return toast.error("No account with that email. Ask them to sign up first.");
+    toast.success("Done! They can now upload lesson notes.");
+    setEmail("");
+  };
   if (!isAdmin) return <p className="py-10 text-center text-muted-foreground">Only admins can see this page.</p>;
   return (
     <div className="mx-auto max-w-2xl">
       <PageTitle title="Payment approvals" sub="Check your Moniepoint account, then approve." icon={Wallet} />
+      <div className="mb-6 rounded-2xl border bg-card p-4">
+        <p className="font-bold">Let a teacher upload notes</p>
+        <p className="mb-2 text-sm text-muted-foreground">Type the email they signed up with.</p>
+        <div className="flex gap-2">
+          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="teacher@email.com" className="h-12" />
+          <Button size="lg" onClick={makeTeacher}>Make teacher</Button>
+        </div>
+      </div>
       <div className="space-y-2">
         {rows.length === 0 && <p className="text-muted-foreground">No payments yet.</p>}
         {rows.map((r) => (
