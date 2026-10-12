@@ -16,6 +16,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticated/classes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated/notes'
+import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 import { Route as AuthenticatedCertificateSkillIdRouteImport } from './routes/_authenticated/certificate.$skillId'
 import { Route as AuthenticatedPracticeIndexRouteImport } from './routes/_authenticated/practice.index'
@@ -57,6 +58,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 const AuthenticatedNotesRoute = AuthenticatedNotesRouteImport.update({
   id: '/notes',
   path: '/notes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPaymentsRoute = AuthenticatedPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ApiTutorRoute = ApiTutorRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/classes': typeof AuthenticatedClassesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notes': typeof AuthenticatedNotesRoute
+  '/payments': typeof AuthenticatedPaymentsRoute
   '/api/tutor': typeof ApiTutorRoute
   '/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/classes': typeof AuthenticatedClassesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notes': typeof AuthenticatedNotesRoute
+  '/payments': typeof AuthenticatedPaymentsRoute
   '/api/tutor': typeof ApiTutorRoute
   '/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/_authenticated/classes': typeof AuthenticatedClassesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
+  '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/api/tutor': typeof ApiTutorRoute
   '/_authenticated/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/_authenticated/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/classes'
     | '/dashboard'
     | '/notes'
+    | '/payments'
     | '/api/tutor'
     | '/certificate/$skillId'
     | '/practice/session'
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/classes'
     | '/dashboard'
     | '/notes'
+    | '/payments'
     | '/api/tutor'
     | '/certificate/$skillId'
     | '/practice/session'
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/_authenticated/classes'
     | '/_authenticated/dashboard'
     | '/_authenticated/notes'
+    | '/_authenticated/payments'
     | '/api/tutor'
     | '/_authenticated/certificate/$skillId'
     | '/_authenticated/practice/session'
@@ -267,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNotesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/payments': {
+      id: '/_authenticated/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof AuthenticatedPaymentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/tutor': {
       id: '/api/tutor'
       path: '/api/tutor'
@@ -330,6 +349,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedClassesRoute: typeof AuthenticatedClassesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
+  AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
   AuthenticatedCertificateSkillIdRoute: typeof AuthenticatedCertificateSkillIdRoute
   AuthenticatedPracticeSessionRoute: typeof AuthenticatedPracticeSessionRoute
   AuthenticatedSkillsSkillIdRoute: typeof AuthenticatedSkillsSkillIdRoute
@@ -343,6 +363,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedClassesRoute: AuthenticatedClassesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
+  AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
   AuthenticatedCertificateSkillIdRoute: AuthenticatedCertificateSkillIdRoute,
   AuthenticatedPracticeSessionRoute: AuthenticatedPracticeSessionRoute,
   AuthenticatedSkillsSkillIdRoute: AuthenticatedSkillsSkillIdRoute,
