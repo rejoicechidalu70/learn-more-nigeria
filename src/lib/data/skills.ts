@@ -1,4 +1,4 @@
-export type Lesson = { id: string; title: string; text: string; video: string; quiz: { q: string; options: string[]; answer: number } };
+export type Lesson = { premium?: boolean; id: string; title: string; text: string; video: string; quiz: { q: string; options: string[]; answer: number } };
 export type Module = { title: string; lessons: Lesson[] };
 export type Skill = { id: string; name: string; track: "Tech" | "Vocational"; emoji: string; blurb: string; modules: Module[] };
 
@@ -105,6 +105,18 @@ const SEEDS: Seed[] = [
   ]],
 ];
 
+export const PREMIUM_PRICE = 5000;
+export const PAY_ACCOUNT = { number: "9134971844", bank: "Moniepoint" };
+const PREMIUM: [string, string][] = [
+  ["Tools and setup like a pro", "Learn the professional tools used in {s} and how to set up your workspace properly."],
+  ["Intermediate techniques", "Build on the basics with intermediate {s} techniques used every day by professionals."],
+  ["Hands-on project 1", "Follow along step by step to complete your first real {s} project from start to finish."],
+  ["Common mistakes and fixes", "See the mistakes beginners make in {s} and exactly how to avoid or fix them."],
+  ["Advanced techniques", "Go deeper with advanced {s} methods that make your work stand out."],
+  ["Hands-on project 2", "Complete a bigger {s} project you can show to customers or employers."],
+  ["Making money with your skill", "Price your {s} work, find customers, use social media and build a portfolio."],
+];
+
 export const SKILLS: Skill[] = SEEDS.map(([id, name, track, emoji, blurb, lessons]) => {
   const L: Lesson[] = lessons.map(([title, text, q, options, answer], i) => ({
     id: `${id}-l${i + 1}`, title, text, video: yt(`${name} ${title} tutorial`), quiz: { q, options, answer },
@@ -114,6 +126,11 @@ export const SKILLS: Skill[] = SEEDS.map(([id, name, track, emoji, blurb, lesson
     modules: [
       { title: "Module 1: Getting started", lessons: L.slice(0, 2) },
       { title: "Module 2: Going further", lessons: L.slice(2) },
+      { title: "Premium classes (paid)", lessons: PREMIUM.map(([t, text], i) => ({
+        id: `${id}-p${i + 1}`, premium: true, title: `${name}: ${t}`, text: text.replace("{s}", name),
+        video: yt(`${name} ${t} tutorial`),
+        quiz: { q: `Which habit helps you get better at ${name}?`, options: ["Practising regularly", "Giving up quickly", "Skipping lessons", "Never asking questions"], answer: 0 },
+      })) },
     ],
   };
 });
