@@ -2,12 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import { Bookmark, BookmarkCheck, Check, ChevronLeft, ChevronRight, Clock, MessageCircle, RotateCcw, X } from "lucide-react";
+import { Bookmark, BookmarkCheck, Check, ChevronLeft, ChevronRight, Clock, Loader2, MessageCircle, RotateCcw, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { byId, filterQuestions, type Question } from "@/lib/data/questions";
 import { supabase } from "@/integrations/supabase/client";
+import { generateQuestionSet } from "@/lib/questions.functions";
 import { createThread } from "@/lib/tutor-store";
 
 const search = z.object({
@@ -16,6 +17,7 @@ const search = z.object({
   year: z.number().optional(),
   mode: z.enum(["practice", "exam"]).default("practice"),
   ids: z.string().optional(),
+  set: z.number().optional(),
 });
 
 export const Route = createFileRoute("/_authenticated/practice/session")({
@@ -55,10 +57,28 @@ function useExplain() {
 
 function Session() {
   const s = Route.useSearch();
-  const questions = useMemo(() => {
+  const navigate = useNavigate();
+  const set = s.set ?? 1;
+  const useAi = !s.ids && !!s.exam && !!s.subject;
+  const local = useMemo(() => {
     if (s.ids) return s.ids.split(",").map(byId).filter(Boolean) as Question[];
     return filterQuestions({ exam: s.exam, subject: s.subject, year: s.year });
   }, [s.ids, s.exam, s.subject, s.year]);
+  const ai = useQuery({
+    queryKey: ["qset", s.exam, s.subject, s.year, set],
+    enabled: useAi,
+    staleTime: Infinity,
+    retry: false,
+    queryFn: () => generateQuestionSet({ data: { exam: s.exam!, subject: s.subject!, year: s.year, set } }),
+  });
+  if (useAi && ai.isLoading) return <div className="py-16 text-center"><Loader2 className="mx-auto mb-3 size-8 animate-spin text-primary" /><p className="font-semibold">Preparing 50 fresh {s.subject} questions (set {set})…</p><p className="text-sm text-muted-foreground">This can take up to a minute.</p></div>;
+  const questions = useAi && ai.data?.length ? ai.data : local;
+  const nextSet = useAi ? () => navigate({ to: "/practice/session", search: { ...s, set: set + 1 } }) : undefined;
+  return <SessionRun key={`${set}-${questions.length}`} questions={questions} nextSet={nextSet} />;
+}
+
+function SessionRun({ questions, nextSet }: { questions: Question[]; nextSet?: () => void }) {
+  const s = Route.useSearch();
 
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -96,7 +116,7 @@ function Session() {
   };
 
   if (!questions.length) return <div className="py-10 text-center">No questions found. <Link to="/practice" className="text-primary">Go back</Link></div>;
-  if (done) return <Results questions={questions} answers={answers} mode={s.mode} bm={bm} explain={explain} />;
+  if (done) return <Results nextSet={nextSet} questions={questions} answers={answers} mode={s.mode} bm={bm} explain={explain} />;
 
   const q = questions[idx];
   const picked = answers[q.id];
@@ -117,7 +137,7 @@ function Session() {
       <div className="rounded-2xl border bg-card p-5">
         <div className="mb-3 flex items-start justify-between gap-3">
           <p className="text-xs font-bold uppercase text-muted-foreground">Question {idx + 1} of {questions.length} · {q.topic}</p>
-          <button onClick={() => bm.toggle(q.id)} aria-label="Bookmark question" className="text-primary">{bm.has(q.id) ? <BookmarkCheck /> : <Bookmark />}</button>
+          {!q.id.startsWith("ai-") && <button onClick={() => bm.toggle(q.id)} aria-label="Bookmark question" className="text-primary">{bm.has(q.id) ? <BookmarkCheck /> : <Bookmark />}</button>}
         </div>
         <p className="text-lg font-semibold">{q.question}</p>
         <div className="mt-4 space-y-2">
@@ -168,7 +188,7 @@ function Session() {
   );
 }
 
-function Results({ questions, answers, mode, bm, explain }: { questions: Question[]; answers: Record<string, number>; mode: string; bm: ReturnType<typeof useBookmarks>; explain: ReturnType<typeof useExplain> }) {
+function Results({ nextSet, questions, answers, mode, bm, explain }: { questions: Question[]; answers: Record<string, number>; mode: string; bm: ReturnType<typeof useBookmarks>; explain: ReturnType<typeof useExplain>; nextSet?: () => void }) {
   const score = questions.filter((q) => answers[q.id] === q.answer).length;
   const pct = Math.round((score / questions.length) * 100);
   const wrong = questions.filter((q) => answers[q.id] !== q.answer);
@@ -198,6 +218,7 @@ function Results({ questions, answers, mode, bm, explain }: { questions: Questio
         {wrong.length > 0 && (
           <Button asChild size="xl"><Link to="/practice/session" search={{ mode: "practice", ids: wrong.map((q) => q.id).join(",") }} reloadDocument><RotateCcw /> Retry wrong answers ({wrong.length})</Link></Button>
         )}
+        {nextSet && <Button size="xl" className="bg-success text-success-foreground hover:bg-success/90" onClick={nextSet}><ChevronRight /> Next set of 50</Button>}
         <Button asChild size="xl" variant="outline"><Link to="/practice">New practice</Link></Button>
       </div>
       <div className="space-y-3">

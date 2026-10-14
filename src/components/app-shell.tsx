@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { BookOpen, GraduationCap, Home, LayoutDashboard, LogOut, MessageCircle, Wallet, PenLine, Video, Wrench } from "lucide-react";
+import { BookOpen, GraduationCap, Home, LayoutDashboard, LogOut, MessageCircle, Wallet, PenLine, Upload, Video, Wrench } from "lucide-react";
 import type { ReactNode } from "react";
 import logo from "@/assets/logo.png";
 import { ThemeToggle } from "./theme-toggle";
@@ -23,6 +23,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const { data: isAdmin } = useQuery({ queryKey: ["is_admin", user?.id], enabled: !!user, queryFn: async () => (await supabase.rpc("is_admin")).data ?? false });
+  const { data: isTeacher } = useQuery({ queryKey: ["roles", user?.id], enabled: !!user, queryFn: async () => ((await supabase.from("user_roles").select("role")).data ?? []).map((r) => r.role) , select: (r: string[]) => r.includes("teacher") || r.includes("admin") });
   const signOut = async () => {
     await qc.cancelQueries();
     qc.clear();
@@ -48,6 +49,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </nav>
           <div className="ml-auto flex items-center gap-1">
             {isAdmin && <Button asChild variant="ghost" size="sm"><Link to="/payments"><Wallet /> Admin</Link></Button>}
+            {isTeacher && <Button asChild variant="ghost" size="icon" aria-label="Upload lesson note"><Link to="/notes" search={{ upload: true }}><Upload /></Link></Button>}
             <ThemeToggle />
             {user ? (
               <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sign out"><LogOut /></Button>

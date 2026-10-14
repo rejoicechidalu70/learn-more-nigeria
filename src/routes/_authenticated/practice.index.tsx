@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Bookmark, Clock, Lightbulb, PenLine } from "lucide-react";
 import { PageTitle } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
-import { EXAMS, SUBJECTS, YEARS, filterQuestions } from "@/lib/data/questions";
+import { EXAMS, SUBJECTS, YEARS } from "@/lib/data/questions";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/practice/")({
@@ -29,7 +29,6 @@ function PracticeHome() {
   const [exam, setExam] = useState<string>("JAMB");
   const [subject, setSubject] = useState<string>("Mathematics");
   const [year, setYear] = useState<number | undefined>(undefined);
-  const count = filterQuestions({ exam, subject, year }).length;
 
   const { data: bookmarks = [] } = useQuery({
     queryKey: ["bookmarks"],
@@ -43,15 +42,15 @@ function PracticeHome() {
         <div><p className="mb-2 text-sm font-bold">Exam</p><div className="flex flex-wrap gap-2">{EXAMS.map((e) => <Chip key={e} active={exam === e} onClick={() => setExam(e)}>{e === "JAMB" ? "JAMB (UTME)" : e}</Chip>)}</div></div>
         <div><p className="mb-2 text-sm font-bold">Subject</p><div className="flex flex-wrap gap-2">{SUBJECTS.map((s) => <Chip key={s} active={subject === s} onClick={() => setSubject(s)}>{s}</Chip>)}</div></div>
         <div><p className="mb-2 text-sm font-bold">Year</p><div className="flex flex-wrap gap-2"><Chip active={!year} onClick={() => setYear(undefined)}>All years</Chip>{YEARS.map((y) => <Chip key={y} active={year === y} onClick={() => setYear(y)}>{y}</Chip>)}</div></div>
-        <p className="text-sm text-muted-foreground">{count} question{count === 1 ? "" : "s"} available</p>
+        <p className="text-sm text-muted-foreground">50 questions per set · a fresh set loads after each one</p>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Button asChild size="xl" disabled={!count} className="h-auto flex-col items-start gap-1 py-4 text-left">
+          <Button asChild size="xl" className="h-auto flex-col items-start gap-1 py-4 text-left">
             <Link to="/practice/session" search={{ exam, subject, year, mode: "practice" }}>
               <span className="flex items-center gap-2"><Lightbulb /> Practice mode</span>
               <span className="text-xs font-normal opacity-90">Instant answers & explanations</span>
             </Link>
           </Button>
-          <Button asChild size="xl" disabled={!count} className="h-auto flex-col items-start gap-1 bg-success py-4 text-left text-success-foreground hover:bg-success/90">
+          <Button asChild size="xl" className="h-auto flex-col items-start gap-1 bg-success py-4 text-left text-success-foreground hover:bg-success/90">
             <Link to="/practice/session" search={{ exam, subject, year, mode: "exam" }}>
               <span className="flex items-center gap-2"><Clock /> Exam mode (CBT)</span>
               <span className="text-xs font-normal opacity-90">Timed, JAMB-style. Results at the end</span>
