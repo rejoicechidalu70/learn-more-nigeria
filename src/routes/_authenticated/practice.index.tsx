@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Bookmark, Clock, Lightbulb, PenLine } from "lucide-react";
 import { PageTitle } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
-import { EXAMS, SUBJECTS, YEARS, filterQuestions } from "@/lib/data/questions";
+import { EXAMS, SUBJECTS, YEARS } from "@/lib/data/questions";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/practice/")({

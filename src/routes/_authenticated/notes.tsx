@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/notes")({
       { property: "og:description", content: "JSS, SSS and university notes organised by level, subject, course and topic." },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { upload?: boolean } => (s.upload ? { upload: true } : {}),
   component: NotesPage,
 });
 
@@ -36,7 +37,8 @@ function NotesPage() {
   const [subject, setSubject] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [view, setView] = useState<SampleNote | null>(null);
-  const [uploadOpen, setUploadOpen] = useState(false);
+  const { upload } = Route.useSearch();
+  const [uploadOpen, setUploadOpen] = useState(!!upload);
   const { data: roles = [] } = useRoles();
   const isTeacher = roles.includes("teacher") || roles.includes("admin");
   const isAdmin = roles.includes("admin");
@@ -90,6 +92,7 @@ function NotesPage() {
 
       {!isTeacher && <p className="mb-4 rounded-xl bg-primary-soft p-3 text-sm">Are you a teacher? Ask the admin to turn on note uploads for your account.</p>}
       {isTeacher && <Button size="lg" className="mb-4" onClick={() => setUploadOpen(true)}><Upload /> Upload lesson note</Button>}
+      {isTeacher && <button onClick={() => setUploadOpen(true)} aria-label="Upload lesson note" className="fixed bottom-24 right-4 z-20 grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg md:bottom-6"><Upload /></button>}
 
       <div className="space-y-2">
         {samples.map((n) => (
