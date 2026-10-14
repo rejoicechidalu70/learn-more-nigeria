@@ -29,7 +29,6 @@ function PracticeHome() {
   const [exam, setExam] = useState<string>("JAMB");
   const [subject, setSubject] = useState<string>("Mathematics");
   const [year, setYear] = useState<number | undefined>(undefined);
-  const count = filterQuestions({ exam, subject, year }).length;
 
   const { data: bookmarks = [] } = useQuery({
     queryKey: ["bookmarks"],
