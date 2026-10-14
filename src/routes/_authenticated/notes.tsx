@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/notes")({
       { property: "og:description", content: "JSS, SSS and university notes organised by level, subject, course and topic." },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { upload?: boolean } => (s.upload ? { upload: true } : {}),
+  validateSearch: (s: Record<string, unknown>): { upload?: boolean } => (s["upload"] ? { upload: true } : {}),
   component: NotesPage,
 });
 
