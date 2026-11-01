@@ -71,6 +71,16 @@ function Session() {
     retry: false,
     queryFn: () => generateQuestionSet({ data: { exam: s.exam!, subject: s.subject!, year: s.year, set } }),
   });
+  if (useAi && ai.isError) return (
+    <div className="mx-auto max-w-2xl py-16 text-center">
+      <p className="mb-1 font-semibold">Couldn't load the new 50-question set.</p>
+      <p className="mb-5 text-sm text-muted-foreground">{(ai.error as Error)?.message ?? "Check your internet, then try again."}</p>
+      <div className="flex justify-center gap-2">
+        <Button size="xl" onClick={() => ai.refetch()}>Try again</Button>
+        <Button size="xl" variant="outline" asChild><Link to="/practice">Back</Link></Button>
+      </div>
+    </div>
+  );
   if (useAi && ai.isLoading) return <div className="py-16 text-center"><Loader2 className="mx-auto mb-3 size-8 animate-spin text-primary" /><p className="font-semibold">Preparing 50 fresh {s.subject} questions (set {set})…</p><p className="text-sm text-muted-foreground">This can take up to a minute.</p></div>;
   const questions = useAi && ai.data?.length ? ai.data : local;
   const nextSet = useAi ? () => navigate({ to: "/practice/session", search: { ...s, set: set + 1 } }) : undefined;
