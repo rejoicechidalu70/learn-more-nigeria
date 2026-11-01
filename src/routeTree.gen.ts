@@ -17,6 +17,7 @@ import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated/notes'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
+import { Route as ApiQuestionsRouteImport } from './routes/api/questions'
 import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 import { Route as AuthenticatedCertificateSkillIdRouteImport } from './routes/_authenticated/certificate.$skillId'
 import { Route as AuthenticatedPracticeIndexRouteImport } from './routes/_authenticated/practice.index'
@@ -64,6 +65,11 @@ const AuthenticatedPaymentsRoute = AuthenticatedPaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiQuestionsRoute = ApiQuestionsRouteImport.update({
+  id: '/api/questions',
+  path: '/api/questions',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTutorRoute = ApiTutorRouteImport.update({
   id: '/api/tutor',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
+  '/api/questions': typeof ApiQuestionsRoute
   '/api/tutor': typeof ApiTutorRoute
   '/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
+  '/api/questions': typeof ApiQuestionsRoute
   '/api/tutor': typeof ApiTutorRoute
   '/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
+  '/api/questions': typeof ApiQuestionsRoute
   '/api/tutor': typeof ApiTutorRoute
   '/_authenticated/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/_authenticated/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/notes'
     | '/payments'
+    | '/api/questions'
     | '/api/tutor'
     | '/certificate/$skillId'
     | '/practice/session'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/notes'
     | '/payments'
+    | '/api/questions'
     | '/api/tutor'
     | '/certificate/$skillId'
     | '/practice/session'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/notes'
     | '/_authenticated/payments'
+    | '/api/questions'
     | '/api/tutor'
     | '/_authenticated/certificate/$skillId'
     | '/_authenticated/practice/session'
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiQuestionsRoute: typeof ApiQuestionsRoute
   ApiTutorRoute: typeof ApiTutorRoute
 }
 
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/payments'
       preLoaderRoute: typeof AuthenticatedPaymentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/questions': {
+      id: '/api/questions'
+      path: '/api/questions'
+      fullPath: '/api/questions'
+      preLoaderRoute: typeof ApiQuestionsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/tutor': {
       id: '/api/tutor'
@@ -381,6 +401,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiQuestionsRoute: ApiQuestionsRoute,
   ApiTutorRoute: ApiTutorRoute,
 }
 export const routeTree = rootRouteImport
