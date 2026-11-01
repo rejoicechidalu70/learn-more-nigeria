@@ -6,3 +6,4 @@
 - [x] Notes library + teacher upload + admin approval
 - [x] Skills academy + certificates
 - [x] Dashboard: course progress, CBT scores, streaks, recommended next lessons
+- [x] 50-question AI sets + admin payment approvals work on Netlify (routed through the published Lovable site)
