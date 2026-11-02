@@ -7,3 +7,8 @@
 - [x] Skills academy + certificates
 - [x] Dashboard: course progress, CBT scores, streaks, recommended next lessons
 - [x] 50-question AI sets + admin payment approvals work on Netlify (routed through the published Lovable site)
+- [ ] More lesson notes for secondary & university library
+- [ ] More video classes for secondary & university
+- [ ] Affirmation voice notes (exam success + goals) — pre-generated audio, works everywhere
+- [ ] Business books library: 20 books, 15 locked (₦2,000 → Moniepoint 9134971844), voice notes
+- [ ] Voice notes in AI tutor (record a question, Teacher Ada answers) — works on Netlify via proxy
