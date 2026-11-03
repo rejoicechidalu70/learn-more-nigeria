@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, MessageCircle, PenLine, Video, Wrench, Wifi } from "lucide-react";
+import { BookOpen, Library, MessageCircle, PenLine, Sparkles, Video, Wrench, Wifi } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 

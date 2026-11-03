@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { BookOpen, GraduationCap, Home, LayoutDashboard, LogOut, MessageCircle, Wallet, PenLine, Upload, Video, Wrench } from "lucide-react";
+import { BookOpen, GraduationCap, Home, LayoutDashboard, Library, LogOut, MessageCircle, Sparkles, Wallet, PenLine, Upload, Video, Wrench } from "lucide-react";
 import type { ReactNode } from "react";
 import logo from "@/assets/logo.png";
 import { ThemeToggle } from "./theme-toggle";
@@ -15,6 +15,8 @@ const NAV = [
   { to: "/classes", label: "Classes", icon: Video },
   { to: "/notes", label: "Notes", icon: BookOpen },
   { to: "/skills", label: "Skills", icon: Wrench },
+  { to: "/books", label: "Books", icon: Library },
+  { to: "/affirmations", label: "Affirmations", icon: Sparkles },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
 ] as const;
 
