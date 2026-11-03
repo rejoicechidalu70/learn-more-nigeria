@@ -20,6 +20,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated/notes'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as ApiQuestionsRouteImport } from './routes/api/questions'
+import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 import { Route as AuthenticatedCertificateSkillIdRouteImport } from './routes/_authenticated/certificate.$skillId'
 import { Route as AuthenticatedPracticeIndexRouteImport } from './routes/_authenticated/practice.index'
@@ -84,6 +85,11 @@ const ApiQuestionsRoute = ApiQuestionsRouteImport.update({
   path: '/api/questions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
+  id: '/api/transcribe',
+  path: '/api/transcribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTutorRoute = ApiTutorRouteImport.update({
   id: '/api/tutor',
   path: '/api/tutor',
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/notes': typeof AuthenticatedNotesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/api/questions': typeof ApiQuestionsRoute
+  '/api/transcribe': typeof ApiTranscribeRoute
   '/api/tutor': typeof ApiTutorRoute
   '/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/notes': typeof AuthenticatedNotesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/api/questions': typeof ApiQuestionsRoute
+  '/api/transcribe': typeof ApiTranscribeRoute
   '/api/tutor': typeof ApiTutorRoute
   '/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -184,6 +192,7 @@ export interface FileRoutesById {
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/api/questions': typeof ApiQuestionsRoute
+  '/api/transcribe': typeof ApiTranscribeRoute
   '/api/tutor': typeof ApiTutorRoute
   '/_authenticated/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/_authenticated/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/payments'
     | '/api/questions'
+    | '/api/transcribe'
     | '/api/tutor'
     | '/certificate/$skillId'
     | '/practice/session'
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/payments'
     | '/api/questions'
+    | '/api/transcribe'
     | '/api/tutor'
     | '/certificate/$skillId'
     | '/practice/session'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/_authenticated/notes'
     | '/_authenticated/payments'
     | '/api/questions'
+    | '/api/transcribe'
     | '/api/tutor'
     | '/_authenticated/certificate/$skillId'
     | '/_authenticated/practice/session'
@@ -263,6 +275,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiQuestionsRoute: typeof ApiQuestionsRoute
+  ApiTranscribeRoute: typeof ApiTranscribeRoute
   ApiTutorRoute: typeof ApiTutorRoute
 }
 
@@ -343,6 +356,13 @@ declare module '@tanstack/react-router' {
       path: '/api/questions'
       fullPath: '/api/questions'
       preLoaderRoute: typeof ApiQuestionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/transcribe': {
+      id: '/api/transcribe'
+      path: '/api/transcribe'
+      fullPath: '/api/transcribe'
+      preLoaderRoute: typeof ApiTranscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/tutor': {
@@ -445,6 +465,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ApiQuestionsRoute: ApiQuestionsRoute,
+  ApiTranscribeRoute: ApiTranscribeRoute,
   ApiTutorRoute: ApiTutorRoute,
 }
 export const routeTree = rootRouteImport
