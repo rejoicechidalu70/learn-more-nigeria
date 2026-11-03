@@ -13,11 +13,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedAffirmationsRouteImport } from './routes/_authenticated/affirmations'
+import { Route as AuthenticatedBooksRouteImport } from './routes/_authenticated/books'
 import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticated/classes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated/notes'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as ApiQuestionsRouteImport } from './routes/api/questions'
+import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 import { Route as AuthenticatedCertificateSkillIdRouteImport } from './routes/_authenticated/certificate.$skillId'
 import { Route as AuthenticatedPracticeIndexRouteImport } from './routes/_authenticated/practice.index'
@@ -46,6 +49,17 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAffirmationsRoute =
+  AuthenticatedAffirmationsRouteImport.update({
+    id: '/affirmations',
+    path: '/affirmations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedBooksRoute = AuthenticatedBooksRouteImport.update({
+  id: '/books',
+  path: '/books',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedClassesRoute = AuthenticatedClassesRouteImport.update({
   id: '/classes',
   path: '/classes',
@@ -69,6 +83,11 @@ const AuthenticatedPaymentsRoute = AuthenticatedPaymentsRouteImport.update({
 const ApiQuestionsRoute = ApiQuestionsRouteImport.update({
   id: '/api/questions',
   path: '/api/questions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
+  id: '/api/transcribe',
+  path: '/api/transcribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTutorRoute = ApiTutorRouteImport.update({
@@ -122,11 +141,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/affirmations': typeof AuthenticatedAffirmationsRoute
+  '/books': typeof AuthenticatedBooksRoute
   '/classes': typeof AuthenticatedClassesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/api/questions': typeof ApiQuestionsRoute
+  '/api/transcribe': typeof ApiTranscribeRoute
   '/api/tutor': typeof ApiTutorRoute
   '/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -140,11 +162,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/affirmations': typeof AuthenticatedAffirmationsRoute
+  '/books': typeof AuthenticatedBooksRoute
   '/classes': typeof AuthenticatedClassesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/api/questions': typeof ApiQuestionsRoute
+  '/api/transcribe': typeof ApiTranscribeRoute
   '/api/tutor': typeof ApiTutorRoute
   '/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -160,11 +185,14 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/affirmations': typeof AuthenticatedAffirmationsRoute
+  '/_authenticated/books': typeof AuthenticatedBooksRoute
   '/_authenticated/classes': typeof AuthenticatedClassesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/api/questions': typeof ApiQuestionsRoute
+  '/api/transcribe': typeof ApiTranscribeRoute
   '/api/tutor': typeof ApiTutorRoute
   '/_authenticated/certificate/$skillId': typeof AuthenticatedCertificateSkillIdRoute
   '/_authenticated/practice/session': typeof AuthenticatedPracticeSessionRoute
@@ -180,11 +208,14 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/affirmations'
+    | '/books'
     | '/classes'
     | '/dashboard'
     | '/notes'
     | '/payments'
     | '/api/questions'
+    | '/api/transcribe'
     | '/api/tutor'
     | '/certificate/$skillId'
     | '/practice/session'
@@ -198,11 +229,14 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/affirmations'
+    | '/books'
     | '/classes'
     | '/dashboard'
     | '/notes'
     | '/payments'
     | '/api/questions'
+    | '/api/transcribe'
     | '/api/tutor'
     | '/certificate/$skillId'
     | '/practice/session'
@@ -217,11 +251,14 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/reset-password'
+    | '/_authenticated/affirmations'
+    | '/_authenticated/books'
     | '/_authenticated/classes'
     | '/_authenticated/dashboard'
     | '/_authenticated/notes'
     | '/_authenticated/payments'
     | '/api/questions'
+    | '/api/transcribe'
     | '/api/tutor'
     | '/_authenticated/certificate/$skillId'
     | '/_authenticated/practice/session'
@@ -238,6 +275,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiQuestionsRoute: typeof ApiQuestionsRoute
+  ApiTranscribeRoute: typeof ApiTranscribeRoute
   ApiTutorRoute: typeof ApiTutorRoute
 }
 
@@ -270,6 +308,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/affirmations': {
+      id: '/_authenticated/affirmations'
+      path: '/affirmations'
+      fullPath: '/affirmations'
+      preLoaderRoute: typeof AuthenticatedAffirmationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/books': {
+      id: '/_authenticated/books'
+      path: '/books'
+      fullPath: '/books'
+      preLoaderRoute: typeof AuthenticatedBooksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/classes': {
       id: '/_authenticated/classes'
@@ -304,6 +356,13 @@ declare module '@tanstack/react-router' {
       path: '/api/questions'
       fullPath: '/api/questions'
       preLoaderRoute: typeof ApiQuestionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/transcribe': {
+      id: '/api/transcribe'
+      path: '/api/transcribe'
+      fullPath: '/api/transcribe'
+      preLoaderRoute: typeof ApiTranscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/tutor': {
@@ -366,6 +425,8 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAffirmationsRoute: typeof AuthenticatedAffirmationsRoute
+  AuthenticatedBooksRoute: typeof AuthenticatedBooksRoute
   AuthenticatedClassesRoute: typeof AuthenticatedClassesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
@@ -380,6 +441,8 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAffirmationsRoute: AuthenticatedAffirmationsRoute,
+  AuthenticatedBooksRoute: AuthenticatedBooksRoute,
   AuthenticatedClassesRoute: AuthenticatedClassesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
@@ -402,6 +465,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ApiQuestionsRoute: ApiQuestionsRoute,
+  ApiTranscribeRoute: ApiTranscribeRoute,
   ApiTutorRoute: ApiTutorRoute,
 }
 export const routeTree = rootRouteImport

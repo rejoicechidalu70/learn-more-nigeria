@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Mic, Square, X } from "lucide-react";
 import { toast } from "sonner";
+import { transcribeVoiceNote } from "@/lib/transcribe.functions";
 import { Conversation, ConversationContent, ConversationEmptyState, ConversationScrollButton } from "@/components/ai-elements/conversation";
 import { Message, MessageContent } from "@/components/ai-elements/message-lite";
 import { SimpleMarkdown } from "@/components/simple-markdown";
@@ -40,6 +41,11 @@ function ChatWindow({ thread }: { thread: TutorThread }) {
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const sentPending = useRef(false);
+  const [recording, setRecording] = useState(false);
+  const [transcribing, setTranscribing] = useState(false);
+  const recorder = useRef<MediaRecorder | null>(null);
+  const chunks = useRef<Blob[]>([]);
+  const cancelled = useRef(false);
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
@@ -83,6 +89,45 @@ function ChatWindow({ thread }: { thread: TutorThread }) {
     setInput("");
   };
 
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const types = ["audio/webm", "audio/mp4", "audio/aac", "audio/ogg"];
+      const supported = typeof MediaRecorder !== "undefined" ? types.find((t) => MediaRecorder.isTypeSupported(t)) : undefined;
+      const mr = new MediaRecorder(stream, supported ? { mimeType: supported } : undefined);
+      chunks.current = [];
+      cancelled.current = false;
+      mr.ondataavailable = (e) => { if (e.data.size) chunks.current.push(e.data); };
+      mr.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        setRecording(false);
+        if (cancelled.current) return;
+        const blob = new Blob(chunks.current, { type: mr.mimeType || "audio/webm" });
+        if (blob.size < 2000) return toast.error("That was too short — hold the mic and ask your question.");
+        setTranscribing(true);
+        try {
+          const text = await transcribeVoiceNote(blob);
+          if (text.trim()) { setInput(""); sendMessage({ text: text.trim() }); }
+          else toast.error("Couldn't hear you clearly. Try again, or type your question.");
+        } catch (e) {
+          toast.error((e as Error).message || "Voice note failed. Type your question instead.");
+        }
+        setTranscribing(false);
+      };
+      mr.start();
+      recorder.current = mr;
+      setRecording(true);
+    } catch {
+      toast.error("Allow the microphone to send voice notes.");
+    }
+  };
+  const finishRecording = () => recorder.current?.stop();
+  const cancelRecording = () => {
+    cancelled.current = true;
+    recorder.current?.stop();
+    toast("Voice note cancelled.");
+  };
+
   return (
     <div className="-mx-4 -my-5 flex h-[calc(100dvh-3.5rem-5rem)] flex-col md:h-[calc(100dvh-3.5rem)]">
       <div className="flex items-center gap-2 border-b px-3 py-2">
@@ -114,9 +159,25 @@ function ChatWindow({ thread }: { thread: TutorThread }) {
         <div className="flex gap-2 overflow-x-auto pb-1">
           {QUICK.map((q) => <button key={q} onClick={() => send(q)} className="shrink-0 rounded-full border bg-card px-3 py-1.5 text-xs font-semibold">{q}</button>)}
         </div>
+        {recording && (
+          <div className="flex items-center gap-2 rounded-xl border border-destructive bg-destructive/10 px-3 py-2 text-sm font-semibold">
+            <span className="size-2 shrink-0 animate-pulse rounded-full bg-destructive" /> Recording… ask your question
+            <button onClick={cancelRecording} aria-label="Cancel voice note" className="ml-auto rounded-full p-1.5 hover:bg-muted"><X className="size-4" /></button>
+            <button onClick={finishRecording} aria-label="Send voice note" className="rounded-full bg-primary p-1.5 text-primary-foreground"><Square className="size-4" /></button>
+          </div>
+        )}
         <PromptInput onSubmit={(m) => send(m.text)}>
-          <PromptInputTextarea ref={inputRef} autoFocus value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Teacher Ada anything…" />
+          <PromptInputTextarea ref={inputRef} autoFocus value={input} onChange={(e) => setInput(e.target.value)} placeholder={transcribing ? "Listening to your voice note…" : "Ask Teacher Ada anything… or tap the mic"} />
           <PromptInputFooter className="justify-end">
+            <button
+              type="button"
+              onClick={startRecording}
+              disabled={recording || transcribing || status === "submitted" || status === "streaming"}
+              aria-label="Record a voice note"
+              className="mr-1 grid size-10 shrink-0 place-items-center rounded-full bg-success-soft text-success transition-opacity hover:opacity-80 disabled:opacity-40"
+            >
+              <Mic className="size-5" />
+            </button>
             <PromptInputSubmit status={status} onStop={stop} disabled={!input.trim() && status === "ready"} />
           </PromptInputFooter>
         </PromptInput>

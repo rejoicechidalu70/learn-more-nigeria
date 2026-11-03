@@ -61,7 +61,7 @@ function Payments() {
           <div key={r.id} className="flex items-center gap-3 rounded-xl border bg-card p-4">
             <div className="flex-1">
               <p className="font-bold">{r.payer_name}</p>
-              <p className="text-sm text-muted-foreground">{skillById(r.skill_id)?.name ?? r.skill_id} · {new Date(r.created_at).toLocaleString()}</p>
+              <p className="text-sm text-muted-foreground">{r.skill_id === "business_books" ? "Business books library" : skillById(r.skill_id)?.name ?? r.skill_id} · {new Date(r.created_at).toLocaleString()}</p>
             </div>
             {r.status === "approved" ? <span className="text-sm font-semibold text-success">Approved</span> : <Button onClick={() => approve(r.id)}>Approve</Button>}
           </div>
