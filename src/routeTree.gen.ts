@@ -17,6 +17,7 @@ import { Route as AuthenticatedAffirmationsRouteImport } from './routes/_authent
 import { Route as AuthenticatedBooksRouteImport } from './routes/_authenticated/books'
 import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticated/classes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedLanguagesRouteImport } from './routes/_authenticated/languages'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated/notes'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as ApiQuestionsRouteImport } from './routes/api/questions'
@@ -68,6 +69,11 @@ const AuthenticatedClassesRoute = AuthenticatedClassesRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLanguagesRoute = AuthenticatedLanguagesRouteImport.update({
+  id: '/languages',
+  path: '/languages',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedNotesRoute = AuthenticatedNotesRouteImport.update({
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/books': typeof AuthenticatedBooksRoute
   '/classes': typeof AuthenticatedClassesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/languages': typeof AuthenticatedLanguagesRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/api/questions': typeof ApiQuestionsRoute
@@ -166,6 +173,7 @@ export interface FileRoutesByTo {
   '/books': typeof AuthenticatedBooksRoute
   '/classes': typeof AuthenticatedClassesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/languages': typeof AuthenticatedLanguagesRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/api/questions': typeof ApiQuestionsRoute
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/_authenticated/books': typeof AuthenticatedBooksRoute
   '/_authenticated/classes': typeof AuthenticatedClassesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/languages': typeof AuthenticatedLanguagesRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/api/questions': typeof ApiQuestionsRoute
@@ -212,6 +221,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/classes'
     | '/dashboard'
+    | '/languages'
     | '/notes'
     | '/payments'
     | '/api/questions'
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/classes'
     | '/dashboard'
+    | '/languages'
     | '/notes'
     | '/payments'
     | '/api/questions'
@@ -255,6 +266,7 @@ export interface FileRouteTypes {
     | '/_authenticated/books'
     | '/_authenticated/classes'
     | '/_authenticated/dashboard'
+    | '/_authenticated/languages'
     | '/_authenticated/notes'
     | '/_authenticated/payments'
     | '/api/questions'
@@ -335,6 +347,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/languages': {
+      id: '/_authenticated/languages'
+      path: '/languages'
+      fullPath: '/languages'
+      preLoaderRoute: typeof AuthenticatedLanguagesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/notes': {
@@ -429,6 +448,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBooksRoute: typeof AuthenticatedBooksRoute
   AuthenticatedClassesRoute: typeof AuthenticatedClassesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedLanguagesRoute: typeof AuthenticatedLanguagesRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
   AuthenticatedCertificateSkillIdRoute: typeof AuthenticatedCertificateSkillIdRoute
@@ -445,6 +465,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBooksRoute: AuthenticatedBooksRoute,
   AuthenticatedClassesRoute: AuthenticatedClassesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedLanguagesRoute: AuthenticatedLanguagesRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
   AuthenticatedCertificateSkillIdRoute: AuthenticatedCertificateSkillIdRoute,
