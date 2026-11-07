@@ -12,3 +12,5 @@
 - [ ] Affirmation voice notes (exam success + goals) — pre-generated audio, works everywhere
 - [ ] Business books library: 20 books, 15 locked (₦2,000 → Moniepoint 9134971844), voice notes
 - [ ] Voice notes in AI tutor (record a question, Teacher Ada answers) — works on Netlify via proxy
+- [x] Make Languages easy to find from the phone menu and home page
+- [ ] Replace book summaries with complete texts — waiting for authorized full-text files or approval to use public-domain titles
